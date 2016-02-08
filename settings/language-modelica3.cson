@@ -1,0 +1,6 @@
+".source.sdl":
+  editor:
+    increaseIndentPattern: "^.*\\{[^}\"']*$"
+    decreaseIndentPattern: "^(.*\\*/)?\\s*\\}([^}{\"']*\\{)?[;\\s]*(//.*|/\\*.*\\*/\\s*)?$"
+    commentStart: "/*"
+    commentEnd: "*/"

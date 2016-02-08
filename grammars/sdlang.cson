@@ -1,0 +1,215 @@
+comment: "SDLang language"
+fileTypes: [
+  "sdl"
+  "sdlang"
+]
+foldingStartMarker: "(?x)/\\*\\*(?!\\*)|^(?![^{]*?//|[^{]*?/\\*(?!.*?\\*/.*?\\{)).*?\\{\\s*($|//|/\\*(?!.*?\\*/.*\\S))"
+foldingStopMarker: "(?<!\\*)\\*\\*/|^\\s*\\}"
+name: "SDLang"
+patterns: [
+  {
+    captures:
+      "0":
+        name: "punctuation.definition.comment.sdl"
+    match: "/\\*\\*/"
+    name: "comment.block.empty.sdl"
+  }
+  {
+    match: "\\b([A-Z][A-Z0-9_]+)\\b"
+    name: "constant.other.sdl"
+  }
+  {
+    include: "#comments"
+  }
+  {
+    include: "#all-types"
+  }
+  {
+    match: "^\\w*([a-zA-Z_][a-zA-Z0-9_\\-\\.\\$]*)"
+    name: "entity.tag.name"
+  }
+  {
+    match: "\\w+([a-zA-Z_][a-zA-Z0-9_\\-\\.\\$]*)="
+    name: "entity.other.attribute-name"
+  }
+  {
+    match: "\\b(true|false|on|off)\\b"
+    name: "constant.language.boolean.sdl"
+  }
+  {
+    match: "\\b(null)\\b"
+    name: "constant.language.sdl"
+  }
+  {
+    match: "\\d{4}\\/\\d{2}\\/\\d{2} (\\d+d:)?\\d{2}:\\d{2}(:\\d{2}(:\\d{3})?)?(-[A-Z0-9]{3})?"
+    name: "constant.other.datetime.sdl"
+  }
+  {
+    match: "\\d{4}\\/\\d{2}\\/\\d{2}"
+    name: "constant.other.date.sdl"
+  }
+  {
+    match: "(\\d+d:)?\\d{2}:\\d{2}:\\d{2}(:\\d{3})?"
+    name: "constant.other.timespan.sdl"
+  }
+  {
+    match: "\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)([LlFfDd]|BD|bd)?\\b"
+    name: "constant.numeric.sdl"
+  }
+  {
+    include: "#string_escaped_char"
+  }
+  {
+    include: "#strings"
+  }
+]
+repository:
+  "all-types":
+    patterns: [
+      {
+        include: "#support-type-built-ins-d"
+      }
+      {
+        include: "#support-type-d"
+      }
+      {
+        include: "#storage-type-d"
+      }
+    ]
+  comments:
+    patterns: [
+      {
+        begin: "/\\*"
+        captures:
+          "0":
+            name: "punctuation.definition.comment.sdl"
+        end: "\\*/"
+        name: "comment.block.sdl"
+      }
+      {
+        captures:
+          "1":
+            name: "punctuation.definition.comment.sdl"
+        match: "(//).*$\\n?"
+        name: "comment.line.double-slash.sdl"
+      }
+      {
+        captures:
+          "1":
+            name: "punctuation.definition.comment.sdl"
+        match: "(#).*$\\n?"
+        name: "comment.line.double-slash.sdl"
+      }
+    ]
+  constant_placeholder:
+    match: "(?i:%(\\([a-z_]+\\))?#?0?\\-?[ ]?\\+?([0-9]*|\\*)(\\.([0-9]*|\\*))?[hL]?[a-z%])"
+    name: "constant.other.placeholder.sdl"
+  "statement-remainder":
+    patterns: [
+      {
+        begin: "\\("
+        end: "(?=\\))"
+        name: "meta.definition.param-list.sdl"
+        patterns: [
+          {
+            include: "#all-types"
+          }
+        ]
+      }
+      {
+        begin: "(throws)"
+        captures:
+          "1":
+            name: "keyword.other.class-fns.sdl"
+        end: "(?={)"
+        name: "meta.definition.throws.sdl"
+        patterns: [
+          {
+            include: "#all-types"
+          }
+        ]
+      }
+    ]
+  string_escaped_char:
+    patterns: [
+      {
+        match: "\\\\(\\\\|[abefnprtv'\"?]|[0-3]\\d{,2}|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8}|&\\w+;)"
+        name: "constant.character.escape.sdl"
+      }
+      {
+        match: "\\\\."
+        name: "invalid.illegal.unknown-escape.sdl"
+      }
+    ]
+  base64_char:
+    patterns: [
+      {
+        match: "[^a-zA-Z0-9\\-\\+\\/]"
+        name: "invalid.illegal.unknown-escape.sdl"
+      }
+    ]
+  strings:
+    patterns: [
+      {
+        begin: "\""
+        beginCaptures:
+          "0":
+            name: "punctuation.definition.string.begin.sdl"
+        end: "\""
+        endCaptures:
+          "0":
+            name: "punctuation.definition.string.end.sdl"
+        name: "string.quoted.double.sdl"
+        patterns: [
+          {
+            include: "#string_escaped_char"
+          }
+        ]
+      }
+      {
+        begin: "`"
+        beginCaptures:
+          "0":
+            name: "punctuation.definition.string.begin.sdl"
+        end: "((?<=`)(`)|`)"
+        endCaptures:
+          "1":
+            name: "punctuation.definition.string.end.sdl"
+          "2":
+            name: "meta.empty-string.double.sdl"
+        name: "string.quoted.double.raw.backtick.sdl"
+      }
+      {
+        begin: "'"
+        beginCaptures:
+          "0":
+            name: "punctuation.definition.string.begin.sdl"
+        end: "'"
+        endCaptures:
+          "0":
+            name: "punctuation.definition.string.end.sdl"
+        name: "string.quoted.single.sdl"
+        patterns: [
+          {
+            include: "#string_escaped_char"
+          }
+        ]
+      }
+      {
+        begin: "\\["
+        beginCaptures:
+          "0":
+            name: "punctuation.definition.string.begin.sdl"
+        end: "\\]"
+        endCaptures:
+          "0":
+            name: "punctuation.definition.string.end.sdl"
+        name: "string.quoted.double.sdl"
+        patterns: [
+          {
+            include: "#base64_char"
+          }
+        ]
+      }
+    ]
+scopeName: "source.sdl"
