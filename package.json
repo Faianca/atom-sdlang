@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Syntax highlighting for Sdlang",
   "engines": {
-    "atom": "*"
+    "atom": "*",
+    "node": "*"
   },
   "homepage": "http://github.com/faianca/atom-sdlang",
   "repository": {
@@ -13,5 +14,5 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/faianca/atom-sdlang/issues"
-  },
+  }
 }
